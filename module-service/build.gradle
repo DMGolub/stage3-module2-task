@@ -1,3 +1,5 @@
 dependencies {
     implementation project(':module-repository')
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.3.1'
+    implementation 'org.modelmapper:modelmapper:3.0.0'
 }
