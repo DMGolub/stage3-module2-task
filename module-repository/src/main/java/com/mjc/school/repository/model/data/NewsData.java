@@ -3,36 +3,30 @@ package com.mjc.school.repository.model.data;
 import com.mjc.school.repository.model.AuthorModel;
 import com.mjc.school.repository.model.NewsModel;
 import com.mjc.school.repository.utility.Utilities;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+@Component
 public class NewsData {
 
 	private static final String NEWS_FILE_NAME = "news";
 	private static final String CONTENT_FILE_NAME = "content";
 	private static final long NEWS_AMOUNT = 20;
-	private static NewsData instance;
+	private final AuthorData authorData;
 	private List<NewsModel> news;
 
-	private NewsData(List<AuthorModel> authors) {
-		init(authors);
+	public NewsData(final AuthorData authorData) {
+		this.authorData = authorData;
 	}
 
-	public static NewsData getNewsData(List<AuthorModel> authors) {
-		if (instance == null) {
-			instance = new NewsData(authors);
-		}
-		return instance;
-	}
-
-	public List<NewsModel> getNews() {
-		return news;
-	}
-
-	private void init(List<AuthorModel> authors) {
+	@PostConstruct
+	private void init() {
+		List<AuthorModel> authors = authorData.getAuthors();
 		List<String> titles = Utilities.readLinesFromFile(NEWS_FILE_NAME);
 		List<String> content = Utilities.readLinesFromFile(CONTENT_FILE_NAME);
 		news = new ArrayList<>();
@@ -48,5 +42,9 @@ public class NewsData {
 				authors.get(random.nextInt(authors.size())).getId()	// authorId
 			));
 		}
+	}
+
+	public List<NewsModel> getNews() {
+		return news;
 	}
 }

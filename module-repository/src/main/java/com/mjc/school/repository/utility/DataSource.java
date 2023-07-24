@@ -4,18 +4,24 @@ import com.mjc.school.repository.model.AuthorModel;
 import com.mjc.school.repository.model.NewsModel;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Component
 public class DataSource {
 
-	private final List<AuthorModel> authors;
-	private final List<NewsModel> news;
+	private final InitialDataGenerator dataGenerator;
+	private List<AuthorModel> authors;
+	private List<NewsModel> news;
 
+	public DataSource(final InitialDataGenerator dataGenerator) {
+		this.dataGenerator = dataGenerator;
+	}
 
-	public DataSource() {
-		authors = InitialDataGenerator.getInstance().getAuthors();
-		news = InitialDataGenerator.getInstance().getNews();
+	@PostConstruct
+	public void init() {
+		authors = dataGenerator.getAuthors();
+		news = dataGenerator.getNews();
 	}
 
 	public List<AuthorModel> getAuthors() {

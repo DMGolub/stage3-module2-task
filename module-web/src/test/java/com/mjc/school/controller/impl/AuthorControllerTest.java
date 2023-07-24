@@ -1,21 +1,23 @@
 package com.mjc.school.controller.impl;
 
-import com.mjc.school.controller.BaseController;
-import com.mjc.school.service.BaseService;
 import com.mjc.school.service.dto.AuthorRequestDto;
-import com.mjc.school.service.dto.AuthorResponseDto;
 import com.mjc.school.service.impl.AuthorService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class AuthorControllerTest {
 
-	private final BaseService<AuthorRequestDto, AuthorResponseDto, Long> authorService = Mockito.mock(AuthorService.class);
-	private final BaseController<AuthorRequestDto, AuthorResponseDto, Long> authorController =
-		new AuthorController(authorService);
+	@Mock
+	private AuthorService authorService;
+	@InjectMocks
+	private AuthorController authorController;
 
 	@Test
 	void create_shouldInvokeServiceSaveMethod_whenInvoked() {

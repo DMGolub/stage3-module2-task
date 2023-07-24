@@ -1,17 +1,20 @@
 package com.mjc.school.service.impl;
 
-import com.mjc.school.repository.BaseRepository;
 import com.mjc.school.repository.impl.AuthorRepository;
 import com.mjc.school.repository.model.AuthorModel;
-import com.mjc.school.service.BaseService;
+import com.mjc.school.service.ServiceTestConfiguration;
 import com.mjc.school.service.dto.AuthorRequestDto;
 import com.mjc.school.service.dto.AuthorResponseDto;
 import com.mjc.school.service.exception.EntityNotFoundException;
 import com.mjc.school.service.exception.ValidationException;
-import com.mjc.school.service.utility.DtoValidator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,18 +30,25 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = ServiceTestConfiguration.class)
 class AuthorServiceTest {
 
-	private BaseRepository<AuthorModel, Long> authorRepository = mock(AuthorRepository.class);	// FIXME
-	private DtoValidator dtoValidator = new DtoValidator();		// FIXME
-	private BaseService<AuthorRequestDto, AuthorResponseDto, Long> authorService =
-		new AuthorService(authorRepository, dtoValidator);
+	@Autowired
+	private AuthorRepository authorRepository;
+	@Autowired
+	private AuthorService authorService;
+
+	@BeforeEach
+	void resetMocks() {
+		reset(authorRepository);
+	}
 
 	@Nested
 	class TestCreate {

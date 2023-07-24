@@ -5,6 +5,10 @@ import com.mjc.school.repository.model.NewsModel;
 import com.mjc.school.repository.utility.DataSource;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,15 +19,17 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class NewsRepositoryTest {
 
-	private final DataSource dataSource = mock(DataSource.class);
-	private final BaseRepository<NewsModel, Long> repository = new NewsRepository(dataSource);
+	@Mock
+	private DataSource dataSource;
+	@InjectMocks
+	private NewsRepository repository;
 
 	@Nested
 	class TestReadAll {

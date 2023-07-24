@@ -1,20 +1,23 @@
 package com.mjc.school.controller.impl;
 
-import com.mjc.school.controller.BaseController;
-import com.mjc.school.service.BaseService;
 import com.mjc.school.service.dto.NewsRequestDto;
-import com.mjc.school.service.dto.NewsResponseDto;
 import com.mjc.school.service.impl.NewsService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class NewsControllerTest {
 
-	private final BaseService<NewsRequestDto, NewsResponseDto, Long> newsService = Mockito.mock(NewsService.class);
-	private final BaseController<NewsRequestDto, NewsResponseDto, Long> newsController = new NewsController(newsService);
+	@Mock
+	private NewsService newsService;
+	@InjectMocks
+	private NewsController newsController;
 
 	@Test
 	void create_shouldInvokeServiceSaveMethod_whenInvoked() {

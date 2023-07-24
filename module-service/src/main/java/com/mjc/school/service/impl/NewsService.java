@@ -10,6 +10,7 @@ import com.mjc.school.service.dto.NewsResponseDto;
 import com.mjc.school.service.exception.EntityNotFoundException;
 import com.mjc.school.service.exception.ValidationException;
 import com.mjc.school.service.utility.DtoValidator;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,9 +26,9 @@ public class NewsService implements BaseService<NewsRequestDto, NewsResponseDto,
 	private static final String NEWS_ID_NAME = "news id";
 	private static final String NEWS_ENTITY_NAME = "news";
 	private static final String AUTHOR_ENTITY_NAME = "author";
+	private final ModelMapper modelMapper = Mappers.getMapper(ModelMapper.class);
 	private final BaseRepository<AuthorModel, Long> authorRepository;
 	private final BaseRepository<NewsModel, Long> newsRepository;
-	private final ModelMapper modelMapper = ModelMapper.INSTANCE;
 	private final DtoValidator dtoValidator;
 
 	public NewsService(

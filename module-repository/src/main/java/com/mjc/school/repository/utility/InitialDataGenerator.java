@@ -2,28 +2,30 @@ package com.mjc.school.repository.utility;
 
 import com.mjc.school.repository.model.AuthorModel;
 import com.mjc.school.repository.model.NewsModel;
+import com.mjc.school.repository.model.data.AuthorData;
+import com.mjc.school.repository.model.data.NewsData;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
-import static com.mjc.school.repository.model.data.AuthorData.getAuthorData;
-import static com.mjc.school.repository.model.data.NewsData.getNewsData;
-
+@Component
 public class InitialDataGenerator {
 
-	private static InitialDataGenerator instance;
-	private final List<AuthorModel> authors;
-	private final List<NewsModel> news;
+	private final AuthorData authorData;
+	private final NewsData newsData;
+	private List<AuthorModel> authors;
+	private List<NewsModel> news;
 
-	private InitialDataGenerator() {
-		authors = getAuthorData().getAuthors();
-		news = getNewsData(authors).getNews();
+	public InitialDataGenerator(final AuthorData authorData, final NewsData newsData) {
+		this.authorData = authorData;
+		this.newsData = newsData;
 	}
 
-	public static InitialDataGenerator getInstance() {
-		if (instance == null) {
-			instance = new InitialDataGenerator();
-		}
-		return instance;
+	@PostConstruct
+	private void init() {
+		authors = authorData.getAuthors();
+		news = newsData.getNews();
 	}
 
 	public List<AuthorModel> getAuthors() {

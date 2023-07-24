@@ -1,11 +1,13 @@
 package com.mjc.school.repository.impl;
 
-import com.mjc.school.repository.BaseRepository;
 import com.mjc.school.repository.model.AuthorModel;
 import com.mjc.school.repository.utility.DataSource;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,11 +22,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class AuthorRepositoryTest {
 
-	private final DataSource dataSource = Mockito.mock(DataSource.class);
-
-	private final BaseRepository<AuthorModel, Long> repository = new AuthorRepository(dataSource);
+	@Mock
+	private DataSource dataSource;
+	@InjectMocks
+	private AuthorRepository repository;
 
 	@Nested
 	class TestReadAll {

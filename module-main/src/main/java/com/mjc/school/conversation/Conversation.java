@@ -20,6 +20,7 @@ import com.mjc.school.utility.ConsoleReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 
 import static com.mjc.school.conversation.Operation.CREATE_AUTHOR;
@@ -52,7 +53,22 @@ public class Conversation {
 	) {
 		this.newsController = newsController;
 		this.authorController = authorController;
-		initCommands();
+	}
+
+	@PostConstruct
+	private void init() {
+		commands = Map.of(
+			CREATE_NEWS.getNumber(), new NewsCreateCommand(newsController),				// 1
+			CREATE_AUTHOR.getNumber(), new AuthorCreateCommand(authorController),		// 2
+			GET_ALL_NEWS.getNumber(), new NewsGetAllCommand(newsController),			// 3
+			GET_ALL_AUTHORS.getNumber(), new AuthorGetAllCommand(authorController),		// 4
+			GET_NEWS_BY_ID.getNumber(), new NewsGetByIdCommand(newsController),			// 5
+			GET_AUTHOR_BY_ID.getNumber(), new AuthorGetByIdCommand(authorController), 	// 6
+			UPDATE_NEWS_BY_ID.getNumber(), new NewsUpdateCommand(newsController),		// 7
+			UPDATE_AUTHOR_BY_ID.getNumber(), new AuthorUpdateCommand(authorController), // 8
+			DELETE_NEWS_BY_ID.getNumber(), new NewsDeleteCommand(newsController),		// 9
+			DELETE_AUTHOR_BY_ID.getNumber(), new AuthorDeleteCommand(authorController)	// 10
+		);
 	}
 
 	public void run() {
@@ -80,21 +96,6 @@ public class Conversation {
 				System.out.println(ERROR_MESSAGE);
 			}
 		}
-	}
-
-	private void initCommands() {
-		commands = Map.of(
-			CREATE_NEWS.getNumber(), new NewsCreateCommand(newsController),				// 1
-			CREATE_AUTHOR.getNumber(), new AuthorCreateCommand(authorController),		// 2
-			GET_ALL_NEWS.getNumber(), new NewsGetAllCommand(newsController),			// 3
-			GET_ALL_AUTHORS.getNumber(), new AuthorGetAllCommand(authorController),		// 4
-			GET_NEWS_BY_ID.getNumber(), new NewsGetByIdCommand(newsController),			// 5
-			GET_AUTHOR_BY_ID.getNumber(), new AuthorGetByIdCommand(authorController), 	// 6
-			UPDATE_NEWS_BY_ID.getNumber(), new NewsUpdateCommand(newsController),		// 7
-			UPDATE_AUTHOR_BY_ID.getNumber(), new AuthorUpdateCommand(authorController), // 8
-			DELETE_NEWS_BY_ID.getNumber(), new NewsDeleteCommand(newsController),		// 9
-			DELETE_AUTHOR_BY_ID.getNumber(), new AuthorDeleteCommand(authorController)	// 10
-		);
 	}
 
 	private void printMainMenu() {
