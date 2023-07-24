@@ -6,8 +6,6 @@ mainClassName = 'com.mjc.school.Main'
 
 dependencies {
     implementation project(':module-web')
-	implementation project(path: ':module-service')
-	implementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
 }
 
 run {

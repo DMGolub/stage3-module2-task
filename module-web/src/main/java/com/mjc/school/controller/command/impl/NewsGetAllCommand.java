@@ -1,11 +1,11 @@
-package com.mjc.school.command.impl;
+package com.mjc.school.controller.command.impl;
 
-import com.mjc.school.command.Command;
+import com.mjc.school.controller.command.Command;
 import com.mjc.school.controller.BaseController;
 import com.mjc.school.service.dto.NewsRequestDto;
 import com.mjc.school.service.dto.NewsResponseDto;
 
-import static com.mjc.school.constants.Constants.NEWS_GET_ALL_WELCOME_MESSAGE;
+import static com.mjc.school.controller.command.Constants.NEWS_GET_ALL_WELCOME_MESSAGE;
 
 public class NewsGetAllCommand implements Command {
 

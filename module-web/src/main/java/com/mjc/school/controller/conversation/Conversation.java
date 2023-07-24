@@ -1,38 +1,38 @@
-package com.mjc.school.conversation;
+package com.mjc.school.controller.conversation;
 
-import com.mjc.school.command.impl.AuthorCreateCommand;
-import com.mjc.school.command.impl.AuthorDeleteCommand;
-import com.mjc.school.command.impl.AuthorGetAllCommand;
-import com.mjc.school.command.impl.AuthorGetByIdCommand;
-import com.mjc.school.command.impl.AuthorUpdateCommand;
-import com.mjc.school.command.Command;
-import com.mjc.school.command.impl.NewsCreateCommand;
-import com.mjc.school.command.impl.NewsDeleteCommand;
-import com.mjc.school.command.impl.NewsGetAllCommand;
-import com.mjc.school.command.impl.NewsGetByIdCommand;
-import com.mjc.school.command.impl.NewsUpdateCommand;
 import com.mjc.school.controller.BaseController;
+import com.mjc.school.controller.command.Command;
+import com.mjc.school.controller.command.impl.AuthorCreateCommand;
+import com.mjc.school.controller.command.impl.AuthorDeleteCommand;
+import com.mjc.school.controller.command.impl.AuthorGetAllCommand;
+import com.mjc.school.controller.command.impl.AuthorGetByIdCommand;
+import com.mjc.school.controller.command.impl.AuthorUpdateCommand;
+import com.mjc.school.controller.command.impl.NewsCreateCommand;
+import com.mjc.school.controller.command.impl.NewsDeleteCommand;
+import com.mjc.school.controller.command.impl.NewsGetAllCommand;
+import com.mjc.school.controller.command.impl.NewsGetByIdCommand;
+import com.mjc.school.controller.command.impl.NewsUpdateCommand;
+import com.mjc.school.controller.utility.ConsoleReader;
 import com.mjc.school.service.dto.AuthorRequestDto;
 import com.mjc.school.service.dto.AuthorResponseDto;
 import com.mjc.school.service.dto.NewsRequestDto;
 import com.mjc.school.service.dto.NewsResponseDto;
-import com.mjc.school.utility.ConsoleReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
 
-import static com.mjc.school.conversation.Operation.CREATE_AUTHOR;
-import static com.mjc.school.conversation.Operation.CREATE_NEWS;
-import static com.mjc.school.conversation.Operation.DELETE_AUTHOR_BY_ID;
-import static com.mjc.school.conversation.Operation.DELETE_NEWS_BY_ID;
-import static com.mjc.school.conversation.Operation.GET_ALL_AUTHORS;
-import static com.mjc.school.conversation.Operation.GET_ALL_NEWS;
-import static com.mjc.school.conversation.Operation.GET_AUTHOR_BY_ID;
-import static com.mjc.school.conversation.Operation.GET_NEWS_BY_ID;
-import static com.mjc.school.conversation.Operation.UPDATE_AUTHOR_BY_ID;
-import static com.mjc.school.conversation.Operation.UPDATE_NEWS_BY_ID;
+import static com.mjc.school.controller.conversation.Operation.CREATE_AUTHOR;
+import static com.mjc.school.controller.conversation.Operation.CREATE_NEWS;
+import static com.mjc.school.controller.conversation.Operation.DELETE_AUTHOR_BY_ID;
+import static com.mjc.school.controller.conversation.Operation.DELETE_NEWS_BY_ID;
+import static com.mjc.school.controller.conversation.Operation.GET_ALL_AUTHORS;
+import static com.mjc.school.controller.conversation.Operation.GET_ALL_NEWS;
+import static com.mjc.school.controller.conversation.Operation.GET_AUTHOR_BY_ID;
+import static com.mjc.school.controller.conversation.Operation.GET_NEWS_BY_ID;
+import static com.mjc.school.controller.conversation.Operation.UPDATE_AUTHOR_BY_ID;
+import static com.mjc.school.controller.conversation.Operation.UPDATE_NEWS_BY_ID;
 
 @Component
 public class Conversation {
@@ -100,7 +100,7 @@ public class Conversation {
 	private void printMainMenu() {
 		System.out.println(MAIN_MENU_HEADER);
 		for (Operation operation : Operation.values()) {
-			System.out.println(operation.getNumber() + ". " + operation.getOperation());
+			System.out.println(operation.getNumber() + ". " + operation.getOperationName());
 		}
 	}
 }

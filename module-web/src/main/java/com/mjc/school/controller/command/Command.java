@@ -1,4 +1,4 @@
-package com.mjc.school.command;
+package com.mjc.school.controller.command;
 
 public interface Command {
 

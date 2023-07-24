@@ -1,6 +1,6 @@
 package com.mjc.school;
 
-import com.mjc.school.conversation.Conversation;
+import com.mjc.school.controller.conversation.Conversation;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

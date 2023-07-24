@@ -1,4 +1,4 @@
-package com.mjc.school.utility;
+package com.mjc.school.controller.utility;
 
 import com.mjc.school.service.dto.NewsRequestDto;
 
