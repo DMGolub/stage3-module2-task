@@ -10,7 +10,6 @@ import static com.mjc.school.repository.model.data.NewsData.getNewsData;
 
 public class InitialDataGenerator {
 
-
 	private static InitialDataGenerator instance;
 	private final List<AuthorModel> authors;
 	private final List<NewsModel> news;

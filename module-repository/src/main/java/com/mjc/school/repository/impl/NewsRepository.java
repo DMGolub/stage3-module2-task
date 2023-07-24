@@ -4,20 +4,18 @@ import com.mjc.school.repository.BaseRepository;
 import com.mjc.school.repository.model.NewsModel;
 import com.mjc.school.repository.utility.DataSource;
 import com.mjc.school.repository.utility.Utilities;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@Repository
 public class NewsRepository implements BaseRepository<NewsModel, Long> {
 
 	private final DataSource dataSource;
 
-	public NewsRepository() {
-		dataSource = DataSource.getInstance();
-	}
-
-	NewsRepository(final DataSource dataSource) {
+	public NewsRepository(final DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 

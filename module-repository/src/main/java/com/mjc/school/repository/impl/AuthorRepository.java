@@ -4,18 +4,16 @@ import com.mjc.school.repository.BaseRepository;
 import com.mjc.school.repository.model.AuthorModel;
 import com.mjc.school.repository.utility.DataSource;
 import com.mjc.school.repository.utility.Utilities;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@Repository
 public class AuthorRepository implements BaseRepository<AuthorModel, Long> {
 
 	private final DataSource dataSource;
-
-	public AuthorRepository() {
-		dataSource = DataSource.getInstance();
-	}
 
 	public AuthorRepository(final DataSource dataSource) {
 		this.dataSource = dataSource;
