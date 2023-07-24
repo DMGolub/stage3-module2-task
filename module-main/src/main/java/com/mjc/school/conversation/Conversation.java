@@ -1,16 +1,16 @@
 package com.mjc.school.conversation;
 
-import com.mjc.school.command.AuthorCreateCommand;
-import com.mjc.school.command.AuthorDeleteCommand;
-import com.mjc.school.command.AuthorGetAllCommand;
-import com.mjc.school.command.AuthorGetByIdCommand;
-import com.mjc.school.command.AuthorUpdateCommand;
+import com.mjc.school.command.impl.AuthorCreateCommand;
+import com.mjc.school.command.impl.AuthorDeleteCommand;
+import com.mjc.school.command.impl.AuthorGetAllCommand;
+import com.mjc.school.command.impl.AuthorGetByIdCommand;
+import com.mjc.school.command.impl.AuthorUpdateCommand;
 import com.mjc.school.command.Command;
-import com.mjc.school.command.NewsCreateCommand;
-import com.mjc.school.command.NewsDeleteCommand;
-import com.mjc.school.command.NewsGetAllCommand;
-import com.mjc.school.command.NewsGetByIdCommand;
-import com.mjc.school.command.NewsUpdateCommand;
+import com.mjc.school.command.impl.NewsCreateCommand;
+import com.mjc.school.command.impl.NewsDeleteCommand;
+import com.mjc.school.command.impl.NewsGetAllCommand;
+import com.mjc.school.command.impl.NewsGetByIdCommand;
+import com.mjc.school.command.impl.NewsUpdateCommand;
 import com.mjc.school.controller.BaseController;
 import com.mjc.school.service.dto.AuthorRequestDto;
 import com.mjc.school.service.dto.AuthorResponseDto;
@@ -44,7 +44,7 @@ public class Conversation {
 
 	private final BaseController<AuthorRequestDto, AuthorResponseDto, Long> authorController;
 	private final BaseController<NewsRequestDto, NewsResponseDto, Long> newsController;
-	private Map<Integer, Command<?, ?, ?>> commands;
+	private Map<Integer, Command> commands;
 
 	@Autowired
 	public Conversation(
@@ -72,7 +72,8 @@ public class Conversation {
 	}
 
 	public void run() {
-		conversation: while (true) {
+		boolean isFinished = false;
+		while (!isFinished) {
 			printMainMenu();
 			int command = ConsoleReader.readPositiveLong(ENTER_COMMAND_MESSAGE).intValue();
 			try {
@@ -87,9 +88,7 @@ public class Conversation {
 					case 8 -> commands.get(8).execute();
 					case 9 -> commands.get(9).execute();
 					case 10 -> commands.get(10).execute();
-					case 11 -> {
-						break conversation;
-					}
+					case 11 -> isFinished = true;
 					default -> System.out.println(NO_COMMAND_MESSAGE);
 				}
 			} catch (Exception e) {

@@ -1,5 +1,6 @@
-package com.mjc.school.command;
+package com.mjc.school.command.impl;
 
+import com.mjc.school.command.Command;
 import com.mjc.school.controller.BaseController;
 import com.mjc.school.service.dto.NewsRequestDto;
 import com.mjc.school.service.dto.NewsResponseDto;
@@ -8,25 +9,27 @@ import com.mjc.school.service.exception.ValidationException;
 import com.mjc.school.utility.ConsoleReader;
 import com.mjc.school.utility.NewsRequestInteractiveReader;
 
-public class NewsUpdateCommand extends Command<NewsRequestDto, NewsResponseDto, Long> {
+import static com.mjc.school.constants.Constants.NEWS_UPDATE_ERROR_MESSAGE;
+import static com.mjc.school.constants.Constants.NEWS_UPDATE_SUCCESS_MESSAGE;
+import static com.mjc.school.constants.Constants.NEWS_UPDATE_WELCOME_MESSAGE;
 
-	private static final String WELCOME_MESSAGE = "Enter news id:";
-	private static final String SUCCESS_MESSAGE = "Record updated successfully!";
-	private static final String ERROR_MESSAGE = "We've got an error: ";
+public class NewsUpdateCommand implements Command {
+
+	private final BaseController<NewsRequestDto, NewsResponseDto, Long> controller;
 
 	public NewsUpdateCommand(BaseController<NewsRequestDto, NewsResponseDto, Long> controller) {
-		super(controller);
+		this.controller = controller;
 	}
 
 	@Override
 	public void execute() {
 		try {
-			final Long id = ConsoleReader.readPositiveLong(WELCOME_MESSAGE);
+			final Long id = ConsoleReader.readPositiveLong(NEWS_UPDATE_WELCOME_MESSAGE);
 			NewsRequestDto newNews = NewsRequestInteractiveReader.read(id);
 			controller.update(newNews);
-			System.out.println(SUCCESS_MESSAGE);
+			System.out.println(NEWS_UPDATE_SUCCESS_MESSAGE);
 		} catch (EntityNotFoundException | ValidationException e) {
-			System.out.println(ERROR_MESSAGE + e.getMessage());
+			System.out.println(NEWS_UPDATE_ERROR_MESSAGE + e.getMessage());
 		}
 	}
 }

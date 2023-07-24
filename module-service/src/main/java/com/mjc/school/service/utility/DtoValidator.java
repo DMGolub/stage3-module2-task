@@ -18,8 +18,8 @@ public class DtoValidator {
 	private static final String NEWS_TITLE_NAME = "news title";
 	private static final String NEWS_CONTENT_NAME = "news content";
 	private static final String AUTHOR_ID = "author id";
-	private static final int AUTHOR_TITLE_LENGTH_MIN = 3;
-	private static final int AUTHOR_TITLE_LENGTH_MAX = 15;
+	private static final int AUTHOR_NAME_LENGTH_MIN = 3;
+	private static final int AUTHOR_NAME_LENGTH_MAX = 15;
 	private static final int NEWS_TITLE_LENGTH_MIN = 5;
 	private static final int NEWS_TITLE_LENGTH_MAX = 30;
 	private static final int NEWS_CONTENT_LENGTH_MIN = 5;
@@ -30,8 +30,8 @@ public class DtoValidator {
 		validateStringProperty(
 			request.name(),
 			AUTHOR_NAME,
-			AUTHOR_TITLE_LENGTH_MIN,
-			AUTHOR_TITLE_LENGTH_MAX
+			AUTHOR_NAME_LENGTH_MIN,
+			AUTHOR_NAME_LENGTH_MAX
 		);
 	}
 

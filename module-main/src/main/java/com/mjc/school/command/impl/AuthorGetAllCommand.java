@@ -1,20 +1,23 @@
-package com.mjc.school.command;
+package com.mjc.school.command.impl;
 
+import com.mjc.school.command.Command;
 import com.mjc.school.controller.BaseController;
 import com.mjc.school.service.dto.AuthorRequestDto;
 import com.mjc.school.service.dto.AuthorResponseDto;
 
-public class AuthorGetAllCommand extends Command<AuthorRequestDto, AuthorResponseDto, Long> {
+import static com.mjc.school.constants.Constants.AUTHOR_GET_ALL_WELCOME_MESSAGE;
 
-	private static final String WELCOME_MESSAGE = "All available authors:";
+public class AuthorGetAllCommand implements Command {
+
+	private final BaseController<AuthorRequestDto, AuthorResponseDto, Long> controller;
 
 	public AuthorGetAllCommand(BaseController<AuthorRequestDto, AuthorResponseDto, Long> controller) {
-		super(controller);
+		this.controller = controller;
 	}
 
 	@Override
 	public void execute() {
-		System.out.println(WELCOME_MESSAGE);
+		System.out.println(AUTHOR_GET_ALL_WELCOME_MESSAGE);
 		controller.readAll().forEach(a -> System.out.println(a.name() + ", id=" + a.id()));
 	}
 }

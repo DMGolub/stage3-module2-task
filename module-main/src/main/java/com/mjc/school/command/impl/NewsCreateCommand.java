@@ -1,5 +1,6 @@
-package com.mjc.school.command;
+package com.mjc.school.command.impl;
 
+import com.mjc.school.command.Command;
 import com.mjc.school.controller.BaseController;
 import com.mjc.school.service.dto.NewsRequestDto;
 import com.mjc.school.service.dto.NewsResponseDto;
@@ -7,13 +8,15 @@ import com.mjc.school.service.exception.EntityNotFoundException;
 import com.mjc.school.service.exception.ValidationException;
 import com.mjc.school.utility.NewsRequestInteractiveReader;
 
-public class NewsCreateCommand extends Command<NewsRequestDto, NewsResponseDto, Long> {
+import static com.mjc.school.constants.Constants.NEWS_CREATE_ERROR_MESSAGE;
+import static com.mjc.school.constants.Constants.NEWS_CREATE_SUCCESS_MESSAGE;
 
-	private static final String SUCCESS_MESSAGE = "Record saved successfully!";
-	private static final String ERROR_MESSAGE = "We've got an error: ";
+public class NewsCreateCommand implements Command {
+
+	private final BaseController<NewsRequestDto, NewsResponseDto, Long> controller;
 
 	public NewsCreateCommand(final BaseController<NewsRequestDto, NewsResponseDto, Long> controller) {
-		super(controller);
+		this.controller = controller;
 	}
 
 	@Override
@@ -21,9 +24,9 @@ public class NewsCreateCommand extends Command<NewsRequestDto, NewsResponseDto, 
 		try {
 			NewsRequestDto newNews = NewsRequestInteractiveReader.read(null);
 			controller.create(newNews);
-			System.out.println(SUCCESS_MESSAGE);
+			System.out.println(NEWS_CREATE_SUCCESS_MESSAGE);
 		} catch (EntityNotFoundException | ValidationException e) {
-			System.out.println(ERROR_MESSAGE + e.getMessage());
+			System.out.println(NEWS_CREATE_ERROR_MESSAGE + e.getMessage());
 		}
 	}
 }
