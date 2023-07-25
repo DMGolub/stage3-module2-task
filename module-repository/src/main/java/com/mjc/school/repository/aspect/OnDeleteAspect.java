@@ -10,11 +10,11 @@ import java.util.List;
 
 @Aspect
 @Component
-public class OnDeleteHandler {
+public class OnDeleteAspect {
 
 	private final BaseRepository<NewsModel, Long> newsRepository;
 
-	public OnDeleteHandler(final BaseRepository<NewsModel, Long> newsRepository) {
+	public OnDeleteAspect(final BaseRepository<NewsModel, Long> newsRepository) {
 		this.newsRepository = newsRepository;
 	}
 

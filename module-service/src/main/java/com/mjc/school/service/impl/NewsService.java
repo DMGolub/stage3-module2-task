@@ -5,6 +5,8 @@ import com.mjc.school.repository.model.AuthorModel;
 import com.mjc.school.repository.model.NewsModel;
 import com.mjc.school.service.BaseService;
 import com.mjc.school.service.ModelMapper;
+import com.mjc.school.service.annotation.ValidateNewsRequestDto;
+import com.mjc.school.service.annotation.ValidateRequestId;
 import com.mjc.school.service.dto.NewsRequestDto;
 import com.mjc.school.service.dto.NewsResponseDto;
 import com.mjc.school.service.exception.EntityNotFoundException;
@@ -23,6 +25,7 @@ import static com.mjc.school.service.exception.ServiceErrorCode.ENTITY_NOT_FOUND
 @Service
 public class NewsService implements BaseService<NewsRequestDto, NewsResponseDto, Long> {
 
+	private static final String AUTHOR_ID_NAME = "author id";
 	private static final String NEWS_ID_NAME = "news id";
 	private static final String NEWS_ENTITY_NAME = "news";
 	private static final String AUTHOR_ENTITY_NAME = "author";
@@ -42,8 +45,8 @@ public class NewsService implements BaseService<NewsRequestDto, NewsResponseDto,
 	}
 
 	@Override
+	@ValidateNewsRequestDto
 	public NewsResponseDto create(final NewsRequestDto request) throws EntityNotFoundException, ValidationException {
-		dtoValidator.validateNewsRequestDTO(request);
 		if (request.authorId() != null) {
 			checkAuthorExists(request.authorId());
 		}
@@ -55,8 +58,8 @@ public class NewsService implements BaseService<NewsRequestDto, NewsResponseDto,
 	}
 
 	@Override
+	@ValidateRequestId(NEWS_ID_NAME)
 	public NewsResponseDto readById(final Long id) throws EntityNotFoundException, ValidationException {
-		dtoValidator.validateId(id, NEWS_ID_NAME);
 		Optional<NewsModel> news = newsRepository.readById(id);
 		if (news.isPresent()) {
 			return modelMapper.newsToResponseDto(news.get());
@@ -74,8 +77,8 @@ public class NewsService implements BaseService<NewsRequestDto, NewsResponseDto,
 	}
 
 	@Override
+	@ValidateNewsRequestDto
 	public NewsResponseDto update(final NewsRequestDto request) throws EntityNotFoundException, ValidationException {
-		dtoValidator.validateNewsRequestDTO(request);
 		final Long id = request.id();
 		dtoValidator.validateId(id, NEWS_ID_NAME);
 		checkAuthorExists(request.authorId());
@@ -92,8 +95,8 @@ public class NewsService implements BaseService<NewsRequestDto, NewsResponseDto,
 	}
 
 	@Override
+	@ValidateRequestId(NEWS_ID_NAME)
 	public boolean deleteById(final Long id) throws EntityNotFoundException, ValidationException {
-		dtoValidator.validateId(id, NEWS_ID_NAME);
 		if (newsRepository.existById(id)) {
 			return newsRepository.deleteById(id);
 		} else {
@@ -105,7 +108,7 @@ public class NewsService implements BaseService<NewsRequestDto, NewsResponseDto,
 	}
 
 	private void checkAuthorExists(final Long authorId) throws EntityNotFoundException {
-		dtoValidator.validateId(authorId, NEWS_ID_NAME);
+		dtoValidator.validateId(authorId, AUTHOR_ID_NAME);
 		if (!authorRepository.existById(authorId)) {
 			throw new EntityNotFoundException(
 				String.format(ENTITY_NOT_FOUND_BY_ID.getMessage(), AUTHOR_ENTITY_NAME, authorId),

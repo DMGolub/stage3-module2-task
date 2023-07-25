@@ -4,6 +4,8 @@ import com.mjc.school.repository.BaseRepository;
 import com.mjc.school.repository.model.AuthorModel;
 import com.mjc.school.service.BaseService;
 import com.mjc.school.service.ModelMapper;
+import com.mjc.school.service.annotation.ValidateAuthorRequestDto;
+import com.mjc.school.service.annotation.ValidateRequestId;
 import com.mjc.school.service.dto.AuthorRequestDto;
 import com.mjc.school.service.dto.AuthorResponseDto;
 import com.mjc.school.service.exception.EntityNotFoundException;
@@ -37,8 +39,8 @@ public class AuthorService implements BaseService<AuthorRequestDto, AuthorRespon
 	}
 
 	@Override
+	@ValidateAuthorRequestDto()
 	public AuthorResponseDto create(final AuthorRequestDto request) throws ValidationException {
-		dtoValidator.validateAuthorRequestDTO(request);
 		final AuthorModel author = modelMapper.requestDtoToAuthor(request);
 		final LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		author.setCreateDate(now);
@@ -47,8 +49,8 @@ public class AuthorService implements BaseService<AuthorRequestDto, AuthorRespon
 	}
 
 	@Override
+	@ValidateRequestId(AUTHOR_ID_NAME)
 	public AuthorResponseDto readById(final Long id) throws EntityNotFoundException, ValidationException {
-		dtoValidator.validateId(id, AUTHOR_ID_NAME);
 		Optional<AuthorModel> author = authorRepository.readById(id);
 		if (author.isPresent()) {
 			return modelMapper.authorToResponseDto(author.get());
@@ -66,9 +68,9 @@ public class AuthorService implements BaseService<AuthorRequestDto, AuthorRespon
 	}
 
 	@Override
+	@ValidateAuthorRequestDto()
 	public AuthorResponseDto update(final AuthorRequestDto request)
 			throws EntityNotFoundException, ValidationException {
-		dtoValidator.validateAuthorRequestDTO(request);
 		final Long id = request.id();
 		dtoValidator.validateId(id, AUTHOR_ID_NAME);
 		if (authorRepository.existById(id)) {
@@ -84,8 +86,8 @@ public class AuthorService implements BaseService<AuthorRequestDto, AuthorRespon
 	}
 
 	@Override
+	@ValidateRequestId(AUTHOR_ID_NAME)
 	public boolean deleteById(final Long id) throws ValidationException {
-		dtoValidator.validateId(id, AUTHOR_ID_NAME);
 		if (authorRepository.existById(id)) {
 			return authorRepository.deleteById(id);
 		} else {

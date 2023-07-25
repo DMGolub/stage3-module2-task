@@ -2,4 +2,6 @@ dependencies {
     implementation project(':module-repository')
     testImplementation 'org.mockito:mockito-junit-jupiter:5.3.1'
     implementation 'org.modelmapper:modelmapper:3.0.0'
+    implementation 'org.springframework:spring-aop:5.3.24'
+    implementation 'org.aspectj:aspectjweaver:1.9.19'
 }
