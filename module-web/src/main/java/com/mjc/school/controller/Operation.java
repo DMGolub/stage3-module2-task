@@ -1,4 +1,4 @@
-package com.mjc.school.controller.conversation;
+package com.mjc.school.controller;
 
 public enum Operation {
 	CREATE_NEWS(1, "Create news"),
@@ -13,7 +13,7 @@ public enum Operation {
 	DELETE_AUTHOR_BY_ID(10, "Delete author by id"),
 	QUIT_PROGRAM(11, "Quit program");
 
-	private Operation(final Integer operationNumber, final String operationName) {
+	Operation(final Integer operationNumber, final String operationName) {
 		this.operationNumber = operationNumber;
 		this.operationName = operationName;
 	}
