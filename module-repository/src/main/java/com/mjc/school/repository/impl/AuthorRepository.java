@@ -1,6 +1,7 @@
 package com.mjc.school.repository.impl;
 
 import com.mjc.school.repository.BaseRepository;
+import com.mjc.school.repository.annotation.OnDelete;
 import com.mjc.school.repository.model.AuthorModel;
 import com.mjc.school.repository.utility.DataSource;
 import com.mjc.school.repository.utility.Utilities;
@@ -48,6 +49,7 @@ public class AuthorRepository implements BaseRepository<AuthorModel, Long> {
 	}
 
 	@Override
+	@OnDelete("set null")
 	public boolean deleteById(final Long id) {
 		return dataSource.getAuthors().removeIf(a -> a.getId().equals(id));
 	}
