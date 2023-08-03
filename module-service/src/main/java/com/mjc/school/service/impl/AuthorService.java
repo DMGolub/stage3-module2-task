@@ -1,17 +1,15 @@
 package com.mjc.school.service.impl;
 
 import com.mjc.school.repository.BaseRepository;
-import com.mjc.school.repository.model.AuthorModel;
+import com.mjc.school.repository.model.Author;
+import com.mjc.school.service.AuthorMapper;
 import com.mjc.school.service.BaseService;
-import com.mjc.school.service.ModelMapper;
-import com.mjc.school.service.annotation.ValidateAuthorRequestDto;
-import com.mjc.school.service.annotation.ValidateRequestId;
 import com.mjc.school.service.dto.AuthorRequestDto;
 import com.mjc.school.service.dto.AuthorResponseDto;
 import com.mjc.school.service.exception.EntityNotFoundException;
-import com.mjc.school.service.exception.ValidationException;
-import com.mjc.school.service.utility.DtoValidator;
-import org.mapstruct.factory.Mappers;
+import com.mjc.school.service.validator.annotation.Min;
+import com.mjc.school.service.validator.annotation.NotNull;
+import com.mjc.school.service.validator.annotation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,41 +17,40 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
+import static com.mjc.school.service.constants.Constants.ID_VALUE_MIN;
 import static com.mjc.school.service.exception.ServiceErrorCode.ENTITY_NOT_FOUND_BY_ID;
 
 @Service
 public class AuthorService implements BaseService<AuthorRequestDto, AuthorResponseDto, Long> {
 
-	private static final String AUTHOR_ID_NAME = "author id";
 	private static final String AUTHOR_ENTITY_NAME = "author";
-	private final ModelMapper modelMapper = Mappers.getMapper(ModelMapper.class);
-	private final BaseRepository<AuthorModel, Long> authorRepository;
-	private final DtoValidator dtoValidator;
+
+	private final BaseRepository<Author, Long> authorRepository;
+	private final AuthorMapper mapper;
 
 	public AuthorService(
-		final BaseRepository<AuthorModel, Long> authorRepository,
-		final DtoValidator dtoValidator
+		final BaseRepository<Author, Long> authorRepository,
+		final AuthorMapper mapper
 	) {
 		this.authorRepository = authorRepository;
-		this.dtoValidator = dtoValidator;
+		this.mapper = mapper;
 	}
 
 	@Override
-	@ValidateAuthorRequestDto()
-	public AuthorResponseDto create(final AuthorRequestDto request) throws ValidationException {
-		final AuthorModel author = modelMapper.requestDtoToAuthor(request);
+	public AuthorResponseDto create(@NotNull @Valid final AuthorRequestDto request) {
+		final Author author = mapper.dtoToModel(request);
 		final LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		author.setCreateDate(now);
 		author.setLastUpdateDate(now);
-		return modelMapper.authorToResponseDto(authorRepository.create(author));
+		return mapper.modelToDto(authorRepository.create(author));
 	}
 
 	@Override
-	@ValidateRequestId(AUTHOR_ID_NAME)
-	public AuthorResponseDto readById(final Long id) throws EntityNotFoundException, ValidationException {
-		Optional<AuthorModel> author = authorRepository.readById(id);
+	public AuthorResponseDto readById(@NotNull @Min(ID_VALUE_MIN) final Long id)
+			throws EntityNotFoundException {
+		final Optional<Author> author = authorRepository.readById(id);
 		if (author.isPresent()) {
-			return modelMapper.authorToResponseDto(author.get());
+			return mapper.modelToDto(author.get());
 		}  else {
 			throw new EntityNotFoundException(
 				String.format(ENTITY_NOT_FOUND_BY_ID.getMessage(), AUTHOR_ENTITY_NAME, id),
@@ -64,19 +61,16 @@ public class AuthorService implements BaseService<AuthorRequestDto, AuthorRespon
 
 	@Override
 	public List<AuthorResponseDto> readAll() {
-		return modelMapper.authorListToDtoList(authorRepository.readAll());
+		return mapper.modelListToDtoList(authorRepository.readAll());
 	}
 
 	@Override
-	@ValidateAuthorRequestDto()
-	public AuthorResponseDto update(final AuthorRequestDto request)
-			throws EntityNotFoundException, ValidationException {
+	public AuthorResponseDto update(@NotNull @Valid final AuthorRequestDto request) throws EntityNotFoundException {
 		final Long id = request.id();
-		dtoValidator.validateId(id, AUTHOR_ID_NAME);
-		if (authorRepository.existById(id)) {
-			AuthorModel author = modelMapper.requestDtoToAuthor(request);
+		if (id != null && authorRepository.existById(id)) {
+			final Author author = mapper.dtoToModel(request);
 			author.setLastUpdateDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
-			return modelMapper.authorToResponseDto(authorRepository.update(author));
+			return mapper.modelToDto(authorRepository.update(author));
 		} else {
 			throw new EntityNotFoundException(
 				String.format(ENTITY_NOT_FOUND_BY_ID.getMessage(), AUTHOR_ENTITY_NAME, id),
@@ -86,15 +80,13 @@ public class AuthorService implements BaseService<AuthorRequestDto, AuthorRespon
 	}
 
 	@Override
-	@ValidateRequestId(AUTHOR_ID_NAME)
-	public boolean deleteById(final Long id) throws ValidationException {
+	public boolean deleteById(@NotNull @Min(ID_VALUE_MIN) final Long id) throws EntityNotFoundException {
 		if (authorRepository.existById(id)) {
 			return authorRepository.deleteById(id);
-		} else {
-			throw new EntityNotFoundException(
-				String.format(ENTITY_NOT_FOUND_BY_ID.getMessage(), AUTHOR_ENTITY_NAME, id),
-				ENTITY_NOT_FOUND_BY_ID.getCode()
-			);
 		}
+		throw new EntityNotFoundException(
+			String.format(ENTITY_NOT_FOUND_BY_ID.getMessage(), AUTHOR_ENTITY_NAME, id),
+			ENTITY_NOT_FOUND_BY_ID.getCode()
+		);
 	}
 }

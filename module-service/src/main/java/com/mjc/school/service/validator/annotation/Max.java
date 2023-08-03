@@ -1,4 +1,4 @@
-package com.mjc.school.controller.annotation;
+package com.mjc.school.service.validator.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -7,8 +7,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Documented
-@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CommandHandler {
-	int operation();
+@Target(ElementType.FIELD)
+@Constraint
+public @interface Max {
+	long value();
 }

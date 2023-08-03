@@ -1,18 +1,16 @@
 package com.mjc.school.service.impl;
 
 import com.mjc.school.repository.BaseRepository;
-import com.mjc.school.repository.model.AuthorModel;
-import com.mjc.school.repository.model.NewsModel;
+import com.mjc.school.repository.model.Author;
+import com.mjc.school.repository.model.News;
 import com.mjc.school.service.BaseService;
-import com.mjc.school.service.ModelMapper;
-import com.mjc.school.service.annotation.ValidateNewsRequestDto;
-import com.mjc.school.service.annotation.ValidateRequestId;
+import com.mjc.school.service.NewsMapper;
 import com.mjc.school.service.dto.NewsRequestDto;
 import com.mjc.school.service.dto.NewsResponseDto;
 import com.mjc.school.service.exception.EntityNotFoundException;
-import com.mjc.school.service.exception.ValidationException;
-import com.mjc.school.service.utility.DtoValidator;
-import org.mapstruct.factory.Mappers;
+import com.mjc.school.service.validator.annotation.Min;
+import com.mjc.school.service.validator.annotation.NotNull;
+import com.mjc.school.service.validator.annotation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,49 +18,44 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
+import static com.mjc.school.service.constants.Constants.ID_VALUE_MIN;
 import static com.mjc.school.service.exception.ServiceErrorCode.ENTITY_NOT_FOUND_BY_ID;
 
 @Service
 public class NewsService implements BaseService<NewsRequestDto, NewsResponseDto, Long> {
 
-	private static final String AUTHOR_ID_NAME = "author id";
-	private static final String NEWS_ID_NAME = "news id";
 	private static final String NEWS_ENTITY_NAME = "news";
 	private static final String AUTHOR_ENTITY_NAME = "author";
-	private final ModelMapper modelMapper = Mappers.getMapper(ModelMapper.class);
-	private final BaseRepository<AuthorModel, Long> authorRepository;
-	private final BaseRepository<NewsModel, Long> newsRepository;
-	private final DtoValidator dtoValidator;
+
+	private final BaseRepository<Author, Long> authorRepository;
+	private final BaseRepository<News, Long> newsRepository;
+	private final NewsMapper mapper;
 
 	public NewsService(
-		final BaseRepository<AuthorModel, Long> authorRepository,
-		final BaseRepository<NewsModel, Long> newsRepository,
-		final DtoValidator dtoValidator
+		final BaseRepository<Author, Long> authorRepository,
+		final BaseRepository<News, Long> newsRepository,
+		final NewsMapper mapper
 	) {
 		this.authorRepository = authorRepository;
 		this.newsRepository = newsRepository;
-		this.dtoValidator = dtoValidator;
+		this.mapper = mapper;
 	}
 
 	@Override
-	@ValidateNewsRequestDto
-	public NewsResponseDto create(final NewsRequestDto request) throws EntityNotFoundException, ValidationException {
-		if (request.authorId() != null) {
-			checkAuthorExists(request.authorId());
-		}
-		final NewsModel news = modelMapper.requestDtoToNews(request);
+	public NewsResponseDto create(@NotNull @Valid final NewsRequestDto request) throws EntityNotFoundException {
+		checkAuthorExists(request.authorId());
+		final News news = mapper.dtoToModel(request);
 		final LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		news.setCreateDate(now);
 		news.setLastUpdateDate(now);
-		return modelMapper.newsToResponseDto(newsRepository.create(news));
+		return mapper.modelToDto(newsRepository.create(news));
 	}
 
 	@Override
-	@ValidateRequestId(NEWS_ID_NAME)
-	public NewsResponseDto readById(final Long id) throws EntityNotFoundException, ValidationException {
-		Optional<NewsModel> news = newsRepository.readById(id);
+	public NewsResponseDto readById(@NotNull @Min(ID_VALUE_MIN) final Long id) throws EntityNotFoundException {
+		Optional<News> news = newsRepository.readById(id);
 		if (news.isPresent()) {
-			return modelMapper.newsToResponseDto(news.get());
+			return mapper.modelToDto(news.get());
 		} else {
 			throw new EntityNotFoundException(
 				String.format(ENTITY_NOT_FOUND_BY_ID.getMessage(), NEWS_ENTITY_NAME, id),
@@ -73,19 +66,17 @@ public class NewsService implements BaseService<NewsRequestDto, NewsResponseDto,
 
 	@Override
 	public List<NewsResponseDto> readAll() {
-		return modelMapper.newsListToDtoList(newsRepository.readAll());
+		return mapper.modelListToDtoList(newsRepository.readAll());
 	}
 
 	@Override
-	@ValidateNewsRequestDto
-	public NewsResponseDto update(final NewsRequestDto request) throws EntityNotFoundException, ValidationException {
+	public NewsResponseDto update(@NotNull @Valid final NewsRequestDto request) throws EntityNotFoundException {
 		final Long id = request.id();
-		dtoValidator.validateId(id, NEWS_ID_NAME);
 		checkAuthorExists(request.authorId());
-		if (newsRepository.existById(id)) {
-			final NewsModel news = modelMapper.requestDtoToNews(request);
+		if (id != null && newsRepository.existById(id)) {
+			final News news = mapper.dtoToModel(request);
 			news.setLastUpdateDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
-			return modelMapper.newsToResponseDto(newsRepository.update(news));
+			return mapper.modelToDto(newsRepository.update(news));
 		} else {
 			throw new EntityNotFoundException(
 				String.format(ENTITY_NOT_FOUND_BY_ID.getMessage(), NEWS_ENTITY_NAME, id),
@@ -95,21 +86,18 @@ public class NewsService implements BaseService<NewsRequestDto, NewsResponseDto,
 	}
 
 	@Override
-	@ValidateRequestId(NEWS_ID_NAME)
-	public boolean deleteById(final Long id) throws EntityNotFoundException, ValidationException {
+	public boolean deleteById(@NotNull @Min(ID_VALUE_MIN) final Long id) throws EntityNotFoundException {
 		if (newsRepository.existById(id)) {
 			return newsRepository.deleteById(id);
-		} else {
-			throw new EntityNotFoundException(
-				String.format(ENTITY_NOT_FOUND_BY_ID.getMessage(), NEWS_ENTITY_NAME, id),
-				ENTITY_NOT_FOUND_BY_ID.getCode()
-			);
 		}
+		throw new EntityNotFoundException(
+			String.format(ENTITY_NOT_FOUND_BY_ID.getMessage(), NEWS_ENTITY_NAME, id),
+			ENTITY_NOT_FOUND_BY_ID.getCode()
+		);
 	}
 
 	private void checkAuthorExists(final Long authorId) throws EntityNotFoundException {
-		dtoValidator.validateId(authorId, AUTHOR_ID_NAME);
-		if (!authorRepository.existById(authorId)) {
+		if (authorId == null || !authorRepository.existById(authorId)) {
 			throw new EntityNotFoundException(
 				String.format(ENTITY_NOT_FOUND_BY_ID.getMessage(), AUTHOR_ENTITY_NAME, authorId),
 				ENTITY_NOT_FOUND_BY_ID.getCode()
